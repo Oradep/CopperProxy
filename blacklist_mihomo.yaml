@@ -742,3 +742,4 @@ payload:
   - 'DOMAIN-SUFFIX,catbox.moe'
   - 'DOMAIN-SUFFIX,client-api.arkoselabs.com'
   - 'DOMAIN-SUFFIX,spotify.com'
+  - 'DOMAIN-SUFFIX,google.com'

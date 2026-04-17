@@ -26,63 +26,70 @@ dns:
     - '+.local'
   default-nameserver:
     - 77.88.8.8
-    - 77.88.8.1
   nameserver:
-    - https://dns.yandex.ru/dns-query
     - 77.88.8.8
   nameserver-policy:
     "+.ru": "77.88.8.8"
-    "+.su": "77.88.8.8"
     "+.рф": "77.88.8.8"
 
 # ================= 1. ПОДПИСКИ (ПРОВАЙДЕРЫ ПРОКСИ) =================
 proxy-providers:
-  # 1.1 Ваша личная подписка 3x-ui (ОСНОВНАЯ)
+  # Основной сервер
   main-personal-sub:
     type: http
-    url: "https://...:2096/sub/" # ВАЖНО: Вставьте сюда ваш полный URL 3x-ui
+    url: "https://...:2096/sub/ВАШ_КОД" # <<< ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ 3X-UI
     interval: 3600
     health-check:
       enable: true
-      url: "http://www.gstatic.com/generate_204"
-      interval: 60
+      url: "http://cp.cloudflare.com/generate_204"
+      expected-status: 204
+      interval: 30
 
-  # 1.2 Публичные сервера (РЕЗЕРВ)
+  # Резервные сервера
   public-backup-subs:
     type: http
     url: "https://raw.githubusercontent.com/Oradep/UltimateProxy/refs/heads/main/vless_wl.txt"
     interval: 3600 
-    # Отсекаем все сервера из РФ
-    exclude-filter: "🇷🇺|RU |Russia|UFO|Timeweb|Yandex|VK|CDNvideo" 
+    exclude-filter: "🇷🇺|RU |Russia|UFO|Timeweb|Yandex|VK|CDNvideo|YA" 
     health-check:
       enable: true
-      url: "http://www.gstatic.com/generate_204"
-      interval: 300
+      url: "http://cp.cloudflare.com/generate_204"
+      expected-status: 204 
+      interval: 120
 
 # ================= 2. ЛОГИКА ГРУПП =================
 proxy-groups:
-  - name: "My-Main-Node"
-    type: url-test
-    use:
-      - main-personal-sub
-    url: "http://www.gstatic.com/generate_204"
-    interval: 60
-
+  # Резервная сеть
   - name: "Public-Backup"
     type: url-test
     use:
       - public-backup-subs
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
+    url: "http://cp.cloudflare.com/generate_204"
+    expected-status: 204
+    interval: 60
     tolerance: 100
 
+  # VPN-Сеть (Сначала пытается через Ваш сервер, если он лежит - кидает на Резерв)
   - name: "Smart-Routing"
     type: fallback
+    use:
+      - main-personal-sub
     proxies:
-      - "My-Main-Node"
       - "Public-Backup"
-    url: "http://www.gstatic.com/generate_204"
-    interval: 30
+    url: "http://cp.cloudflare.com/generate_204"
+    expected-status: 204
+    interval: 15
+
+  # === МАГИЧЕСКИЙ АВТО-ПЕРЕКЛЮЧАТЕЛЬ ===
+  # Каждые 15 сек проверяет глобальный интернет. Если работает -> DIRECT. Если заглушка провайдера -> кидает в VPN.
+  - name: "Auto-State"
+    type: fallback
+    proxies:
+      - DIRECT
+      - "Smart-Routing"
+    url: "http://cp.cloudflare.com/generate_204"
+    expected-status: 204
+    interval: 15
 
 # ================= 3. СПИСКИ ДОМЕНОВ (GITHUB) =================
 rule-providers:
@@ -93,52 +100,40 @@ rule-providers:
     url: "https://raw.githubusercontent.com/Oradep/CopperProxy/refs/heads/main/blacklist_mihomo.yaml"
     interval: 86400 
 
-  # ПОДКЛЮЧАЕМ ВАШ БЕЛЫЙ СПИСОК
   sanmai-whitelist:
     type: http
     behavior: classical
     format: yaml   
-    url: "https://raw.githubusercontent.com/Oradep/CopperProxy/refs/heads/main/whitelist_mihomo.yaml" # Замените ссылку на ту, где будет лежать файл
+    url: "https://raw.githubusercontent.com/Oradep/CopperProxy/refs/heads/main/whitelist_mihomo.yaml" # <<< ВСТАВЬТЕ СЮДА ССЫЛКУ НА БЕЛЫЙ СПИСОК
     interval: 86400 
 
 # ================= 4. МАРШРУТИЗАЦИЯ =================
 rules:
-  # 1. Локальная сеть
+  # 1. Локалка и роутер - всегда напрямую
   - GEOIP,lan,DIRECT,no-resolve
   - GEOSITE,private,DIRECT
 
-  # 2. Жизненно важные правила для работы клиента FlClash
-  - DOMAIN-KEYWORD,ipwho,Smart-Routing
-  - DOMAIN-KEYWORD,myip,Smart-Routing
-  - DOMAIN-KEYWORD,ipapi,Smart-Routing
-  - DOMAIN-KEYWORD,ident.me,Smart-Routing
-  - DOMAIN-KEYWORD,ipinfo,Smart-Routing
-
-  # 3. >>> БЕЛЫЕ СПИСКИ (RU СЕРВИСЫ) ИДУТ НАПРЯМУЮ <<<
+  # 2. РУССКИЕ САЙТЫ (Белый список) - ВСЕГДА НАПРЯМУЮ в любом состоянии
   - RULE-SET,sanmai-whitelist,DIRECT
 
-  # 4. GitHub (чтобы подписки обновлялись даже при блоках)
-  - DOMAIN-SUFFIX,githubusercontent.com,Smart-Routing
-  - DOMAIN-SUFFIX,github.com,Smart-Routing
+  # 3. Служебные домены (чтобы VPN не зависал)
+  - DOMAIN-KEYWORD,github,Smart-Routing
+  - DOMAIN-KEYWORD,ipwho,Smart-Routing
+  - DOMAIN-KEYWORD,ipinfo,Smart-Routing
+  - DOMAIN-KEYWORD,ipapi,Smart-Routing
 
-  # 5. TELEGRAM (Гарантированная работа)
+  # 4. ЗАБЛОКИРОВАННЫЕ САЙТЫ И ИИ (Черный список + Гугл/Телега) - ВСЕГДА ЧЕРЕЗ VPN
   - GEOSITE,telegram,Smart-Routing
   - GEOIP,telegram,Smart-Routing
-
-  # 6. GOOGLE & GEMINI & AI (Гарантированная работа)
-  - DOMAIN-SUFFIX,gemini.google.com,Smart-Routing
   - DOMAIN-KEYWORD,google,Smart-Routing
-  - DOMAIN-SUFFIX,googleapis.com,Smart-Routing
   - DOMAIN-SUFFIX,gstatic.com,Smart-Routing
-  - DOMAIN-SUFFIX,appspot.com,Smart-Routing
+  - DOMAIN-SUFFIX,googleapis.com,Smart-Routing
   - DOMAIN-SUFFIX,ggpht.com,Smart-Routing
   - DOMAIN-SUFFIX,openai.com,Smart-Routing
   - DOMAIN-SUFFIX,ai.com,Smart-Routing
   - DOMAIN-SUFFIX,oaistatic.com,Smart-Routing
-  - DOMAIN-SUFFIX,oaiusercontent.com,Smart-Routing
-
-  # 7. ЧЕРНЫЙ СПИСОК (Идет через VPN)
   - RULE-SET,sanmai-blacklist,Smart-Routing
 
-  # 8. ВЕСЬ ОСТАЛЬНОЙ ТРАФИК ИДЕТ НАПРЯМУЮ
-  - MATCH,DIRECT
+  # 5. ВСЁ ОСТАЛЬНОЕ (Pinterest, игры и т.д.) -> ИДЁТ В АВТО-ПЕРЕКЛЮЧАТЕЛЬ
+  # Если режим черных списков: пойдет напрямую. Если режим белых списков: пойдет через VPN.
+  - MATCH,Auto-State
