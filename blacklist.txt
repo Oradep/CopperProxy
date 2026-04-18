@@ -1,4 +1,5 @@
-# === META / INSTAGRAM / FACEBOOK ===
+# === META / INSTAGRAM / FACEBOOK / WHATSAPP ===
+# (Заблокировано РКН)
 instagram.com
 cdninstagram.com
 facebook.com
@@ -8,8 +9,10 @@ fbsbx.com
 meta.com
 whatsapp.com
 whatsapp.net
+whatsapp.cc
 
-# === DISCORD ===
+# === DISCORD & СОЦСЕТИ ===
+# (Заблокировано РКН)
 discord.com
 discord.gg
 discord.co
@@ -19,14 +22,18 @@ discordapp.com
 discordapp.net
 discordstatus.com
 discord-activities.com
-
-# === TWITTER (X) ===
 twitter.com
 twimg.com
 x.com
 t.co
+tiktok.com
+tiktokcdn.com
+linkedin.com
+snapchat.com
+snap.com
 
-# === YOUTUBE / GOOGLE (дополнения) ===
+# === YOUTUBE / GOOGLE ===
+# (Замедлено РКН)
 youtube.com
 youtu.be
 googlevideo.com
@@ -37,6 +44,7 @@ youtube-nocookie.com
 googleusercontent.com
 
 # === NEURAL NETWORKS / AI ===
+# (Геоблок со стороны сервисов - Санкции)
 openai.com
 chatgpt.com
 oaistatic.com
@@ -44,14 +52,20 @@ oaiusercontent.com
 ai.com
 anthropic.com
 claude.ai
+gemini.google.com
+aistudio.google.com
+copilot.microsoft.com
 midjourney.com
 civitai.com
 huggingface.co
 perplexity.ai
 x.ai
 grok.com
+grazie.ai
+livekit.cloud
 
-# === MEDIA & STREAMING ===
+# === MEDIA / STREAMING / CINEMA ===
+# (Санкции + РКН)
 netflix.com
 nflxext.com
 nflximg.net
@@ -65,21 +79,33 @@ hdrezka.ag
 rezka.ag
 kinopub.net
 kino.pub
+filmix.biz
+lostfilm.tv
+crunchyroll.com
 
-# === GAMING ===
+# === GAMING & GAME CDNS ===
+# (Санкции: уход с рынка, блок RU-IP)
 supercell.com
 brawlstarsgame.com
 clashofclans.com
 clashroyaleapp.com
 squadbustersgame.com
 epicgames.com
-roblox.com
-rbxcdn.com
 steampowered.com
 playstation.com
 xboxlive.com
+roblox.com
+rbxcdn.com
+arkoselabs.com
+wbagora.com
+nintendo.com
+nintendo.net
+nintendo-europe.com
+curseforge.com
+modrinth.com
 
-# === IT / DEV / VPN ===
+# === IT / DEV / DESIGN / CORPORATE ===
+# (Санкции: блокировка скачивания, отказ в обслуживании)
 github.com
 githubusercontent.com
 githubcopilot.com
@@ -96,26 +122,53 @@ notion.site
 jetbrains.com
 canva.com
 figma.com
+adobe.com
+adobe.io
+autodesk.com
+cisco.com
+hashicorp.com
+oracle.com
+vmware.com
+broadcom.com
+dell.com
+hp.com
+cloudflare-ech.com
+
+# === FREELANCE / FINANCE / WORK ===
+# (Санкции)
+upwork.com
+fiverr.com
+payoneer.com
+wise.com
+skyscanner.com
+booking.com
+airbnb.com
+
+# === VPN / PRIVACY ===
+# (Заблокировано РКН)
 protonmail.com
 proton.me
+tutanota.com
 tailscale.com
 adguard.com
+torproject.org
 
 # === TORRENTS & TRACKERS ===
+# (Заблокировано РКН)
 rutracker.org
 rutracker.cc
 rutracker.nl
+rutracker.ne
 rutor.info
 rutor.is
 nnmclub.to
 kinozal.tv
 nyaa.si
 flibusta.is
+booktracker.org
 
-# === MISC & NEWS ===
-bbc.com
-bbci.co.uk
-dw.com
+# === ART / HOBBY / MISC ===
+# (РКН + Санкции)
 patreon.com
 medium.com
 quora.com
@@ -124,3 +177,36 @@ redditmedia.com
 imgur.com
 mega.nz
 mega.co.nz
+deviantart.com
+pixiv.net
+kemono.cr
+etsy.com
+strava.com
+4pda.ru
+4pda.to
+
+# === ADULT CONTENT ===
+# (Заблокировано РКН)
+pornhub.com
+phncdn.com
+xhamster.com
+xhamsterlive.com
+chaturbate.com
+redtube.com
+e621.net
+pornolab.net
+
+# === NEWS & INDEPENDENT MEDIA ===
+# (Заблокировано РКН)
+bbc.com
+bbci.co.uk
+dw.com
+meduza.io
+tvrain.tv
+svoboda.org
+zona.media
+theins.ru
+gordonua.com
+unian.net
+republic.ru
+colta.ru
