@@ -2,7 +2,7 @@
 # Эти переменные автоматически подставятся в нужные места ниже.
 x-variables:
   personal_sub: &personal_sub "https://..." # <<< ССЫЛКА НА СВОЙ ОСНОВНОЙ СЕРВЕР
-  backup_sub: &backup_sub "https://raw.githubusercontent.com/Oradep/UltimateProxy/refs/heads/main/vless_wl.txt" # <<< ССЫЛКА НА СЕРВЕР ДЛЯ ОБХОДА БЛ
+  backup_sub: &backup_sub "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt" # <<< ССЫЛКА НА СЕРВЕР ДЛЯ ОБХОДА БЛ
   blacklist_url: &blacklist_url "https://raw.githubusercontent.com/Oradep/CopperProxy/refs/heads/main/blacklist_mihomo.yaml"
   whitelist_url: &whitelist_url "https://raw.githubusercontent.com/Oradep/CopperProxy/refs/heads/main/whitelist_mihomo.yaml"
 
