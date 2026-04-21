@@ -1,6 +1,22 @@
 #!name=Прокси (Белый список)
 #!desc=Всё через прокси, кроме сайтов из белого списка
 
+# =========================================================
+# ⚙️ НАСТРОЙКИ КОНФИГУРАЦИИ (МЕНЯТЬ ТОЛЬКО ЭТОТ БЛОК)
+# =========================================================
+x-variables:
+  # 1. Ссылки на подписку и правила
+  sub_url: &sub_url "ВСТАВЬТЕ_ССЫЛКУ_НА_ВАШИ_СЕРВЕРА"
+  rule_url: &rule_url "ВСТАВЬТЕ_ССЫЛКУ_НА_GITHUB_RAW_YAML"
+
+  # 2. Таймеры обновлений (В секундах. Поставьте 0, чтобы ПОЛНОСТЬЮ ОТКЛЮЧИТЬ)
+  update_interval: &update_interval 86400  # Обновление серверов и правил (86400 = 1 раз в сутки)
+  ping_interval: &ping_interval 300        # Проверка пинга серверов (300 = раз в 5 минут)
+  
+  # 3. Чувствительность переключения (В миллисекундах)
+  ping_tolerance: &ping_tolerance 50       # Не переключать сервер, если разница пинга меньше 50мс
+# =========================================================
+
 port: 7890
 allow-lan: false
 mode: rule
@@ -25,12 +41,12 @@ dns:
 proxy-providers:
   my-servers:
     type: http
-    url: "ВСТАВЬТЕ_СЮДА_ССЫЛКУ_НА_ВАШУ_ПОДПИСКУ_С_СЕРВЕРАМИ"
-    interval: 86400
+    url: *sub_url
+    interval: *update_interval
     health-check:
       enable: true
       url: http://cp.cloudflare.com/generate_204
-      interval: 300 # Проверка пинга раз в 5 минут (бережет батарею)
+      interval: *ping_interval
 
 proxy-groups:
   - name: "Auto"
@@ -38,16 +54,16 @@ proxy-groups:
     use:
       - my-servers
     url: http://cp.cloudflare.com/generate_204
-    interval: 300
-    tolerance: 50 # Не прыгать между серверами, если разница в пинге меньше 50мс
+    interval: *ping_interval
+    tolerance: *ping_tolerance
 
 rule-providers:
   whitelist:
     type: http
     behavior: classical
     format: yaml   
-    url: "https://raw.githubusercontent.com/Oradep/CopperProxy/refs/heads/main/whitelist_mihomo.yaml"
-    interval: 86400 # Обновление списка раз в сутки
+    url: *rule_url
+    interval: *update_interval
 
 rules:
   # 1. Локальная сеть напрямую
@@ -57,5 +73,5 @@ rules:
   # 2. Сайты из вашего Github -> НАПРЯМУЮ
   - RULE-SET,whitelist,DIRECT
 
-  # 3. ВСЁ ОСТАЛЬНОЕ -> В ПРОКСИ (Автоматический выбор сервера)
+  # 3. ВСЁ ОСТАЛЬНОЕ -> В ПРОКСИ
   - MATCH,Auto
